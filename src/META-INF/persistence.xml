@@ -3,6 +3,14 @@
   <persistence-unit name="PeregrineAirlines-APIPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.peregrineairlines.entities.PlaneModel</class>
+    <class>com.peregrineairlines.entities.Flight</class>
+    <class>com.peregrineairlines.entities.Airport</class>
+    <class>com.peregrineairlines.entities.Ticket</class>
+    <class>com.peregrineairlines.entities.Customer</class>
+    <class>com.peregrineairlines.entities.PlaneModelSeat</class>
+    <class>com.peregrineairlines.entities.Order1</class>
+    <class>com.peregrineairlines.entities.TicketOrder</class>
+    <class>com.peregrineairlines.entities.BagFee</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=peregrine_airlines"/>
       <property name="javax.persistence.jdbc.password" value="admin1"/>

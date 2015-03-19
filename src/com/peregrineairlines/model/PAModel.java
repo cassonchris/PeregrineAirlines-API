@@ -5,13 +5,10 @@
  */
 package com.peregrineairlines.model;
 
+import com.peregrineairlines.entities.Flight;
 import com.peregrineairlines.entities.PlaneModel;
 import java.util.Collection;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import java.util.Date;
 
 /**
  *
@@ -19,21 +16,36 @@ import javax.persistence.Query;
  */
 public class PAModel {
     
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
-    
     public static void open() {
-        emf = Persistence.createEntityManagerFactory("PeregrineAirlines-APIPU");
-        em = emf.createEntityManager();
+        PADA.open();
     }
     
     public static void close() {
-        em.close();
-        emf.close();
+        PADA.close();
     }
     
     public static Collection<PlaneModel> getPlaneModels() {
-        Query query = em.createNamedQuery("PlaneModel.findAll");
-        return query.getResultList();
+        return PADA.getPlaneModels();
+    }
+    
+    public static void checkIn(int ticketNumber) {
+        // TODO
+    }
+    
+    public static Collection<Flight> searchFlights(String to, String from, Date depart, Date arrival) {
+        return PADA.searchFlights(to, from, depart, arrival);
+    }
+    
+    public static Flight getFlightById(int flightId) {
+        return PADA.getFlightById(flightId);
+    }
+    
+    public static void changeFlight(int oldTicketNumber, int newFlightId, String firstName, String lastName, int ticketCount) {
+        PADA.returnTicket(oldTicketNumber);
+        // TODO
+    }
+    
+    public static void submitOrder(int flightId, String firstName, String lastName, int ticketCount) {
+        // TODO
     }
 }

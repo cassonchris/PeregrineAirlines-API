@@ -85,8 +85,15 @@ public class PADA {
     }
     
     static Collection<Flight> searchFlights(String to, String from, Date depart, Date arrival) {
-        // TODO
-        return new ArrayList<>();
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Flight.findByFlightDetails")
+        					.setParameter("departingAirport", from)
+        					.setParameter("arrivingAirport", to)
+        					.setParameter("flightDatetime", depart);
+        Collection<Flight> results = query.getResultList();
+        em.close(); 
+        // TODOne
+        return results;
     }
     
     static Flight getFlightById(int flightId) {

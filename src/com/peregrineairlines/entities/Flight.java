@@ -35,7 +35,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Flight.findAll", query = "SELECT f FROM Flight f"),
     @NamedQuery(name = "Flight.findByFlightId", query = "SELECT f FROM Flight f WHERE f.flightId = :flightId"),
-    @NamedQuery(name = "Flight.findByFlightDatetime", query = "SELECT f FROM Flight f WHERE f.flightDatetime = :flightDatetime")})
+    @NamedQuery(name = "Flight.findByFlightDatetime", query = "SELECT f FROM Flight f WHERE f.flightDatetime = :flightDatetime"),
+	@NamedQuery(name = "Flight.findByFlightToFrom", query = "SELECT f FROM Flight f WHERE "
+					+ "f.departingAirport = :departingAirport AND f.arrivingAirport = :arrivingAirport"),
+	@NamedQuery(name = "Flight.findByFlightDetails", query = "SELECT f FROM Flight f WHERE "
+					+ "f.departingAirport = :departingAirport AND f.arrivingAirport = :arrivingAirport "
+					+ "AND f.flightDatetime = :flightDatetime")})
 public class Flight implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -8,10 +8,12 @@ package com.peregrineairlines.model;
 import com.peregrineairlines.entities.BagFee;
 import com.peregrineairlines.entities.Flight;
 import com.peregrineairlines.entities.PlaneModel;
+import com.peregrineairlines.entities.Ticket;
 import com.peregrineairlines.entities.TicketOrder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -105,6 +107,18 @@ public class PADA {
     
     static void insertTicketOrder(TicketOrder ticketOrder) {
         insert(ticketOrder);
+    }
+    
+    static Ticket getTicketById(int ticketId) {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Ticket.findByTicketId");
+        query.setParameter("ticketId", ticketId);
+        List<Ticket> results = query.getResultList();
+        if (!results.isEmpty()) {
+            return results.get(0);
+        } else {
+            return null;
+        }
     }
     
     static void returnTicket(int ticketNumber) {

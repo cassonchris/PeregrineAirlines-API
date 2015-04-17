@@ -7,6 +7,7 @@ package com.peregrineairlines.model;
 
 import com.peregrineairlines.entities.Flight;
 import com.peregrineairlines.entities.PlaneModel;
+import com.peregrineairlines.entities.Ticket;
 import java.util.Collection;
 import java.util.Date;
 
@@ -26,6 +27,10 @@ public class PAModel {
     
     public static Collection<PlaneModel> getPlaneModels() {
         return PADA.getPlaneModels();
+    }
+    
+    public static Ticket getTicketById(int ticketId) {
+        return PADA.getTicketById(ticketId);
     }
     
     public static void checkIn(int ticketNumber) {

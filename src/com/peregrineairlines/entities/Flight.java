@@ -6,6 +6,7 @@
 package com.peregrineairlines.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,6 +14,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,16 +41,21 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Flight.findByFlightDatetime", query = "SELECT f FROM Flight f WHERE f.flightDatetime = :flightDatetime"),
     /*Edited by DanY, 3/30/15_1140*/
     @NamedQuery(name = "Flight.findByFlightToFrom", query = "SELECT f FROM Flight f WHERE "
-					+ "f.departingAirport = :departingAirport AND f.arrivingAirport = :arrivingAirport"),
-	@NamedQuery(name = "Flight.findByFlightDetails", query = "SELECT f FROM Flight f WHERE "
-					+ "f.departingAirport = :departingAirport AND f.arrivingAirport = :arrivingAirport "
-					+ "AND f.flightDatetime = :flightDatetime")})
-	/*End Edit by DanY*/
+            + "f.departingAirport = :departingAirport AND f.arrivingAirport = :arrivingAirport"),
+    @NamedQuery(name = "Flight.findByFlightDetails", query = "SELECT f FROM Flight f "
+            + "WHERE f.departingAirport.airportId = :departingAirport "
+            + "AND f.arrivingAirport.airportId = :arrivingAirport "
+            + "AND f.flightDatetime > :from "
+            + "AND f.flightDatetime < :to "
+            + "AND (SELECT COUNT(t) FROM f.ticketCollection t WHERE t.ticketOrder IS NULL) >= :passengers")})
+/*End Edit by DanY*/
 public class Flight implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "flight_id")
+    @Column(name = "flight_id", insertable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer flightId;
     @Basic(optional = false)
     @Column(name = "flight_datetime")
@@ -66,44 +74,85 @@ public class Flight implements Serializable {
     private Collection<Ticket> ticketCollection;
 
     public Flight() {
+        ticketCollection = new ArrayList<>();
     }
 
     public Flight(Integer flightId) {
+        this();
         this.flightId = flightId;
     }
 
     public Flight(Integer flightId, Date flightDatetime) {
+        this();
         this.flightId = flightId;
         this.flightDatetime = flightDatetime;
     }
-    
+
     public Flight(Date flightDatetime, PlaneModel planeModel, Airport departingAirport, Airport arrivingAirport) {
+        this();
         this.flightDatetime = flightDatetime;
         this.planeModel = planeModel;
         this.departingAirport = departingAirport;
         this.arrivingAirport = arrivingAirport;
     }
-    
+
     /**
-     * This method is intended for adding fligts that aren't already in the system.
+     * This method is intended for adding flights that aren't already in the
+     * system.
+     *
      * @param flightDatetime
      * @param planeModel
      * @param departingAirport
      * @param arrivingAirport
-     * @return 
+     * @return
      */
     public static Flight createFlight(Date flightDatetime, PlaneModel planeModel, Airport departingAirport, Airport arrivingAirport) {
         Flight flight = new Flight(flightDatetime, planeModel, departingAirport, arrivingAirport);
-        flight.createAndSetTicketCollection();
+        flight.createTicketCollection();
         return flight;
     }
-    
-    private void createAndSetTicketCollection() {
-        Collection<Ticket> tickets = new ArrayList<>();
+
+    private void createTicketCollection() {
         for (PlaneModelSeat seat : planeModel.getPlaneModelSeatCollection()) {
-            // TODO
+            Ticket ticket = new Ticket();
+            ticket.setSeat(seat.getSeat());
+            BigDecimal price = new BigDecimal(getDistance()).multiply(seat.getPricePerMile());
+            ticket.setPrice(price);
+            addTicket(ticket);
         }
-        this.ticketCollection = tickets;
+    }
+    
+    public double getDistance() {
+        // TODO - this isn't a correct formula for calculating distance using latitue and longitude
+        int aSquared = (departingAirport.getLatitude() - arrivingAirport.getLatitude()) ^ 2;
+        int bSquared = (departingAirport.getLongitude() - arrivingAirport.getLongitude()) ^ 2;
+        int cSquared = aSquared + bSquared;
+        return Math.sqrt(cSquared);
+    }
+    
+    public BigDecimal getCheapestTicketPrice() {
+        BigDecimal cheapestPrice = null;
+        for (Ticket ticket : ticketCollection) {
+            if (cheapestPrice == null || cheapestPrice.compareTo(ticket.getPrice()) > 0) {
+                cheapestPrice = ticket.getPrice();
+            }
+        }
+        return cheapestPrice;
+    }
+    
+    public BigDecimal getHighestTicketPrice() {
+        BigDecimal highestPrice = null;
+        for (Ticket ticket : ticketCollection) {
+            if (highestPrice == null || highestPrice.compareTo(ticket.getPrice()) < 0) {
+                highestPrice = ticket.getPrice();
+            }
+        }
+        return highestPrice;
+    }
+    
+    public void addTicket(Ticket ticket) {
+        ticketCollection.add(ticket);
+        ticket.setFlight(this);
     }
 
     public Integer getFlightId() {
@@ -179,5 +228,5 @@ public class Flight implements Serializable {
     public String toString() {
         return "com.peregrineairlines.entities.Flight[ flightId=" + flightId + " ]";
     }
-    
+
 }

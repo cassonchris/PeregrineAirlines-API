@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -30,12 +32,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c"),
     @NamedQuery(name = "Customer.findByCustomerId", query = "SELECT c FROM Customer c WHERE c.customerId = :customerId"),
     @NamedQuery(name = "Customer.findByFirstname", query = "SELECT c FROM Customer c WHERE c.firstname = :firstname"),
-    @NamedQuery(name = "Customer.findByLastname", query = "SELECT c FROM Customer c WHERE c.lastname = :lastname")})
+    @NamedQuery(name = "Customer.findByLastname", query = "SELECT c FROM Customer c WHERE c.lastname = :lastname"),
+    @NamedQuery(name = "Customer.findByFirstAndLast", query = "SELECT c FROM Customer c WHERE c.firstname = :firstname AND c.lastname = :lastname")
+})
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "customer_id")
+    @Column(name = "customer_id", insertable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer customerId;
     @Basic(optional = false)
     @Column(name = "firstname")
@@ -90,6 +95,11 @@ public class Customer implements Serializable {
 
     public void setTicketOrderCollection(Collection<TicketOrder> ticketOrderCollection) {
         this.ticketOrderCollection = ticketOrderCollection;
+    }
+    
+    public void addTicketOrder(TicketOrder ticketOrder) {
+        ticketOrderCollection.add(ticketOrder);
+        ticketOrder.setCustomer(this);
     }
 
     @Override

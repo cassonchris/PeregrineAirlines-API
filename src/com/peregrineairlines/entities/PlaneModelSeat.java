@@ -6,9 +6,12 @@
 package com.peregrineairlines.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,10 +32,15 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PlaneModelSeat.findByPlaneModelSeatId", query = "SELECT p FROM PlaneModelSeat p WHERE p.planeModelSeatId = :planeModelSeatId"),
     @NamedQuery(name = "PlaneModelSeat.findBySeat", query = "SELECT p FROM PlaneModelSeat p WHERE p.seat = :seat")})
 public class PlaneModelSeat implements Serializable {
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @Column(name = "price_per_mile")
+    private BigDecimal pricePerMile;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "plane_model_seat_id")
+    @Column(name = "plane_model_seat_id", insertable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer planeModelSeatId;
     @Basic(optional = false)
     @Column(name = "seat")
@@ -100,6 +108,14 @@ public class PlaneModelSeat implements Serializable {
     @Override
     public String toString() {
         return "com.peregrineairlines.entities.PlaneModelSeat[ planeModelSeatId=" + planeModelSeatId + " ]";
+    }
+
+    public BigDecimal getPricePerMile() {
+        return pricePerMile;
+    }
+
+    public void setPricePerMile(BigDecimal pricePerMile) {
+        this.pricePerMile = pricePerMile;
     }
     
 }

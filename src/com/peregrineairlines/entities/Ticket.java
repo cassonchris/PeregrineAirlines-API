@@ -6,11 +6,15 @@
 package com.peregrineairlines.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,14 +35,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Ticket.findAll", query = "SELECT t FROM Ticket t"),
     @NamedQuery(name = "Ticket.findByTicketId", query = "SELECT t FROM Ticket t WHERE t.ticketId = :ticketId"),
+    @NamedQuery(name = "Ticket.findAvailableTicketByFlight", query = "SELECT t FROM Ticket t WHERE t.ticketOrder IS NULL AND t.flight.flightId = :flightId"),
     @NamedQuery(name = "Ticket.findBySeat", query = "SELECT t FROM Ticket t WHERE t.seat = :seat"),
     @NamedQuery(name = "Ticket.findByPassengerFirstname", query = "SELECT t FROM Ticket t WHERE t.passengerFirstname = :passengerFirstname"),
     @NamedQuery(name = "Ticket.findByPassengerLastname", query = "SELECT t FROM Ticket t WHERE t.passengerLastname = :passengerLastname")})
 public class Ticket implements Serializable {
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @Column(name = "price")
+    private BigDecimal price;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "ticket_id")
+    @Column(name = "ticket_id", insertable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ticketId;
     @Basic(optional = false)
     @Column(name = "seat")
@@ -148,6 +158,14 @@ public class Ticket implements Serializable {
 
     public void setBagFeeCollection(Collection<BagFee> bagFeeCollection) {
         this.bagFeeCollection = bagFeeCollection;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
     
 }

@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,7 +37,8 @@ public class TicketOrder implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "ticket_order_id")
+    @Column(name = "ticket_order_id", insertable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ticketOrderId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketOrder", orphanRemoval = true)
     private Collection<Ticket> ticketCollection;
@@ -65,6 +68,11 @@ public class TicketOrder implements Serializable {
 
     public void setTicketCollection(Collection<Ticket> ticketCollection) {
         this.ticketCollection = ticketCollection;
+    }
+    
+    public void addTicket(Ticket ticket) {
+        ticketCollection.add(ticket);
+        ticket.setTicketOrder(this);
     }
 
     public Customer getCustomer() {

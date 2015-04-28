@@ -11,6 +11,7 @@
     <class>com.peregrineairlines.entities.Order1</class>
     <class>com.peregrineairlines.entities.TicketOrder</class>
     <class>com.peregrineairlines.entities.BagFee</class>
+    <class>com.peregrineairlines.entities.TicketReturn</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=peregrine_airlines"/>
       <property name="javax.persistence.jdbc.password" value="admin1"/>

@@ -12,6 +12,7 @@ import com.peregrineairlines.entities.Flight;
 import com.peregrineairlines.entities.PlaneModel;
 import com.peregrineairlines.entities.Ticket;
 import com.peregrineairlines.entities.TicketOrder;
+import com.peregrineairlines.entities.TicketReturn;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -193,9 +194,9 @@ public class PADA {
             return null;
         }
     }
-
-    static void returnTicket(int ticketNumber) {
-        // TODO
+    
+    static void insertTicketReturn(TicketReturn ticketReturn) {
+        insert(ticketReturn);
     }
 
     static void insertBagFee(BagFee bagFee) {

@@ -34,6 +34,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TicketOrder.findAll", query = "SELECT t FROM TicketOrder t"),
     @NamedQuery(name = "TicketOrder.findByTicketOrderId", query = "SELECT t FROM TicketOrder t WHERE t.ticketOrderId = :ticketOrderId")})
 public class TicketOrder implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketOrder")
+    private Collection<TicketReturn> ticketReturnCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -106,6 +108,15 @@ public class TicketOrder implements Serializable {
     @Override
     public String toString() {
         return "com.peregrineairlines.entities.TicketOrder[ ticketOrderId=" + ticketOrderId + " ]";
+    }
+
+    @XmlTransient
+    public Collection<TicketReturn> getTicketReturnCollection() {
+        return ticketReturnCollection;
+    }
+
+    public void setTicketReturnCollection(Collection<TicketReturn> ticketReturnCollection) {
+        this.ticketReturnCollection = ticketReturnCollection;
     }
     
 }

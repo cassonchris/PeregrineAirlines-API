@@ -40,6 +40,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ticket.findByPassengerFirstname", query = "SELECT t FROM Ticket t WHERE t.passengerFirstname = :passengerFirstname"),
     @NamedQuery(name = "Ticket.findByPassengerLastname", query = "SELECT t FROM Ticket t WHERE t.passengerLastname = :passengerLastname")})
 public class Ticket implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticket")
+    private Collection<TicketReturn> ticketReturnCollection;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @Column(name = "price")
@@ -166,6 +168,15 @@ public class Ticket implements Serializable {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @XmlTransient
+    public Collection<TicketReturn> getTicketReturnCollection() {
+        return ticketReturnCollection;
+    }
+
+    public void setTicketReturnCollection(Collection<TicketReturn> ticketReturnCollection) {
+        this.ticketReturnCollection = ticketReturnCollection;
     }
     
 }

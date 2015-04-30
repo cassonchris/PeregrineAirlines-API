@@ -58,6 +58,10 @@ public class PAModel {
     public static Ticket getTicketById(int ticketId) {
         return PADA.getTicketById(ticketId);
     }
+    
+    public static Ticket getTicketByIdAndPassengerLastname(int ticketId, String passengerLastname) {
+        return PADA.getTicketByIdAndPassengerLastname(ticketId, passengerLastname);
+    }
 
     public static void returnTicket(int ticketId) {
         Ticket ticket = getTicketById(ticketId);
@@ -78,8 +82,13 @@ public class PAModel {
         PADA.insertTicketReturn(ticketReturn);
     }
 
-    public static void checkIn(int ticketNumber) {
-        // TODO
+    public static Ticket checkIn(int ticketNumber) {
+        Ticket ticket = getTicketById(ticketNumber);
+        if (ticket != null) {
+            ticket.setCheckedIn(Boolean.TRUE);
+            updateTicket(ticket);
+        }
+        return ticket;
     }
 
     public static void scheduleFlight(int from, int to, int planeModelId, Date depart) {

@@ -7,6 +7,8 @@ package com.peregrineairlines.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -45,8 +47,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Flight.findByFlightDetails", query = "SELECT f FROM Flight f "
             + "WHERE f.departingAirport.airportId = :departingAirport "
             + "AND f.arrivingAirport.airportId = :arrivingAirport "
-            + "AND f.flightDatetime > :from "
-            + "AND f.flightDatetime < :to "
+            + "AND f.flightDatetime >= :from "
+            + "AND f.flightDatetime <= :to "
             + "AND (SELECT COUNT(t) FROM f.ticketCollection t WHERE t.ticketOrder IS NULL) >= :passengers")})
 /*End Edit by DanY*/
 public class Flight implements Serializable {
@@ -117,6 +119,7 @@ public class Flight implements Serializable {
             Ticket ticket = new Ticket();
             ticket.setSeat(seat.getSeat());
             BigDecimal price = new BigDecimal(getDistance()).multiply(seat.getPricePerMile());
+            price = price.setScale(2, RoundingMode.CEILING);
             ticket.setPrice(price);
             addTicket(ticket);
         }
@@ -124,9 +127,9 @@ public class Flight implements Serializable {
     
     public double getDistance() {
         // TODO - this isn't a correct formula for calculating distance using latitue and longitude
-        int aSquared = (departingAirport.getLatitude() - arrivingAirport.getLatitude()) ^ 2;
-        int bSquared = (departingAirport.getLongitude() - arrivingAirport.getLongitude()) ^ 2;
-        int cSquared = aSquared + bSquared;
+        double aSquared = Math.pow(departingAirport.getLatitude() - arrivingAirport.getLatitude(), 2);
+        double bSquared = Math.pow(departingAirport.getLongitude() - arrivingAirport.getLongitude(), 2);
+        double cSquared = aSquared + bSquared;
         return Math.sqrt(cSquared);
     }
     

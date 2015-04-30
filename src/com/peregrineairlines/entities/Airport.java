@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "airport")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Airport.findAll", query = "SELECT a FROM Airport a"),
+    @NamedQuery(name = "Airport.findAll", query = "SELECT a FROM Airport a ORDER BY a.city"),
     @NamedQuery(name = "Airport.findByAirportId", query = "SELECT a FROM Airport a WHERE a.airportId = :airportId"),
     @NamedQuery(name = "Airport.findByCity", query = "SELECT a FROM Airport a WHERE a.city = :city"),
     @NamedQuery(name = "Airport.findByLatitude", query = "SELECT a FROM Airport a WHERE a.latitude = :latitude"),

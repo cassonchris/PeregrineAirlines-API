@@ -38,8 +38,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ticket.findAvailableTicketByFlight", query = "SELECT t FROM Ticket t WHERE t.ticketOrder IS NULL AND t.flight.flightId = :flightId"),
     @NamedQuery(name = "Ticket.findBySeat", query = "SELECT t FROM Ticket t WHERE t.seat = :seat"),
     @NamedQuery(name = "Ticket.findByPassengerFirstname", query = "SELECT t FROM Ticket t WHERE t.passengerFirstname = :passengerFirstname"),
-    @NamedQuery(name = "Ticket.findByPassengerLastname", query = "SELECT t FROM Ticket t WHERE t.passengerLastname = :passengerLastname")})
+    @NamedQuery(name = "Ticket.findByPassengerLastname", query = "SELECT t FROM Ticket t WHERE t.passengerLastname = :passengerLastname"),
+    @NamedQuery(name = "Ticket.findByTicketIdPassengerLastname", query = "SELECT t FROM Ticket t WHERE t.ticketId = :ticketId AND t.passengerLastname = :passengerLastname")
+})
 public class Ticket implements Serializable {
+    @Column(name = "checked_in")
+    private Boolean checkedIn;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticket")
     private Collection<TicketReturn> ticketReturnCollection;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -177,6 +181,14 @@ public class Ticket implements Serializable {
 
     public void setTicketReturnCollection(Collection<TicketReturn> ticketReturnCollection) {
         this.ticketReturnCollection = ticketReturnCollection;
+    }
+
+    public Boolean getCheckedIn() {
+        return checkedIn;
+    }
+
+    public void setCheckedIn(Boolean checkedIn) {
+        this.checkedIn = checkedIn;
     }
     
 }

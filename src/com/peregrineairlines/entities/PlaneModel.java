@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "plane_model")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "PlaneModel.findAll", query = "SELECT p FROM PlaneModel p"),
+    @NamedQuery(name = "PlaneModel.findAll", query = "SELECT p FROM PlaneModel p ORDER BY p.name"),
     @NamedQuery(name = "PlaneModel.findByPlaneModelId", query = "SELECT p FROM PlaneModel p WHERE p.planeModelId = :planeModelId"),
     @NamedQuery(name = "PlaneModel.findByName", query = "SELECT p FROM PlaneModel p WHERE p.name = :name")})
 public class PlaneModel implements Serializable {

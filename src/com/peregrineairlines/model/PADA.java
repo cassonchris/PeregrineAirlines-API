@@ -187,6 +187,21 @@ public class PADA {
         EntityManager em = emf.createEntityManager();
         Query query = em.createNamedQuery("Ticket.findByTicketId");
         query.setParameter("ticketId", ticketId);
+        query.setMaxResults(1);
+        List<Ticket> results = query.getResultList();
+        if (!results.isEmpty()) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
+    
+    static Ticket getTicketByIdAndPassengerLastname(int ticketId, String passengerLastname) {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createNamedQuery("Ticket.findByTicketIdPassengerLastname");
+        query.setParameter("ticketId", ticketId);
+        query.setParameter("passengerLastname", passengerLastname);
+        query.setMaxResults(1);
         List<Ticket> results = query.getResultList();
         if (!results.isEmpty()) {
             return results.get(0);
